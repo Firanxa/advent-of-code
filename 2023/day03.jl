@@ -146,10 +146,6 @@ function part2_day03(lines::Vector{String}) :: Integer
         neighbor = is_valid_at[i, j]
         if !visited[i, j] && neighbor.is_numeric
             num_str = A[i, j]
-            if num_str == '.'
-                @show i
-                @show j
-            end
             # Walk left.
             curr_y = j - 1
             while curr_y >= 1 && isnumeric(A[i, curr_y])
