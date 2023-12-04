@@ -33,10 +33,8 @@ function part2_day04(lines::Vector{String}) :: Integer
         winning_nums, card_nums = _parse_line(line)
         matches = _matches(Set{Integer}(winning_nums), Set{Integer}(card_nums))
         # Add copies of the next cards for each (winning) copy of the currently held card.
-        for ___ in 1:card_counts[i]
-            for k in 1:matches
-                card_counts[i + k] += 1
-            end
+        for k in 1:matches
+            card_counts[i + k] += card_counts[i]
         end
     end
     return sum(values(card_counts))
