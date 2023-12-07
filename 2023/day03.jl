@@ -1,73 +1,8 @@
 using BenchmarkTools
 
-function _parse_strings_to_matrix(vec::Vector{String}) :: Matrix{Char}
-    # For more general use, this function could assert that the lengths of each string in
-    # `vec` are equal to ensure the list of strings can be represented by a char matrix.
-    # Credit goes to this topic on the Julia forums:
-    #   https://discourse.julialang.org/t/converting-a-array-of-strings-to-an-array-of-char/35123/3
-    @assert !isempty(vec)
-    m, n = length(vec), length(vec[1])
-    A = Matrix{Char}(undef, m, n)
-    for i in eachindex(vec), (j, ch) in enumerate(vec[i])
-        A[i, j] = ch
-    end
-    return A
-end
-
-function _neighbors(x, y, dims::Tuple{Int, Int}) :: Vector{Tuple{Int, Int}}
-    m, n = dims
-    neighbors_coords = Tuple{Int, Int}[]
-
-    # Eight edge cases to consider:
-    # 1. Top left corner
-    if (x, y) == (1, 1)
-        x_range = x:(x + 1)
-        y_range = y:(y + 1)
-    # 2. Top right corner
-    elseif (x, y) == (1, n)
-        x_range = x:(x + 1)
-        y_range = (y - 1):y
-    # 3. Top interior border
-    elseif x == 1
-        x_range = x:(x + 1)
-        y_range = (y - 1):(y + 1)
-    # 4. Bottom left corner
-    elseif (x, y) == (m, 1)
-        x_range = (x - 1):x
-        y_range = y:(y + 1)
-    # 5. Bottom right corner
-    elseif (x, y) == (m, n)
-        x_range = (x - 1):x
-        y_range = (y - 1):y
-    # 6. Bottom interior border
-    elseif x == m
-        x_range = (x - 1):x
-        y_range = (y - 1):(y + 1)
-    # 7. Left interior border
-    elseif y == 1
-        x_range = (x - 1):(x + 1)
-        y_range = y:(y + 1)
-    # 8. Right interior border
-    elseif y == n
-        x_range = (x - 1):(x + 1)
-        y_range = (y - 1):y
-    # Interior vertices
-    else
-        x_range = (x - 1):(x + 1)
-        y_range = (y - 1):(y + 1)
-    end
-    for i in x_range, j in y_range
-        # Exclude the point itself; it's not its own neighbor.
-        if (i, j) != (x, y)
-            push!(neighbors_coords, (i, j))
-        end
-    end
-    return neighbors_coords
-end
-
-function part1_day03(lines::Vector{String}) :: Integer
+function part1_day03(lines::Vector{String})
     A = _parse_strings_to_matrix(lines)
-
+    
     # Track which numbers are adjacent to a symbol.
     m, n = size(A)
     is_valid_at = falses(m, n)
@@ -112,7 +47,7 @@ function part1_day03(lines::Vector{String}) :: Integer
     return sum(part_nums)
 end
 
-function part2_day03(lines::Vector{String}) :: Integer
+function part2_day03(lines::Vector{String})
     A = _parse_strings_to_matrix(lines)
     m, n = size(A)
     
@@ -127,7 +62,7 @@ function part2_day03(lines::Vector{String}) :: Integer
     # Identify the part numbers adjacent to every gear, in the same manner as in Part 1.
     # This time, enumerate the gears so as to track which numbers border each gear.
     is_valid_at = Matrix{NamedTuple{(:gear_id, :is_numeric), Tuple{Int, Bool}}}(undef, m, n)
-
+    
     # is_numeric should be set to false for all (i, j), to account for any undefined
     # behavior from initialization.
     for i in eachindex(is_valid_at)
@@ -176,6 +111,71 @@ function part2_day03(lines::Vector{String}) :: Integer
         end
     end
     return gear_ratios_sum
+end
+
+function _neighbors(x, y, dims::Tuple{Int, Int}) :: Vector{Tuple{Int, Int}}
+    m, n = dims
+    neighbors_coords = Tuple{Int, Int}[]
+    
+    # Eight edge cases to consider:
+    # 1. Top left corner.
+    if (x, y) == (1, 1)
+        x_range = x:(x + 1)
+        y_range = y:(y + 1)
+    # 2. Top right corner.
+    elseif (x, y) == (1, n)
+        x_range = x:(x + 1)
+        y_range = (y - 1):y
+    # 3. Top interior border.
+    elseif x == 1
+        x_range = x:(x + 1)
+        y_range = (y - 1):(y + 1)
+    # 4. Bottom left corner.
+    elseif (x, y) == (m, 1)
+        x_range = (x - 1):x
+        y_range = y:(y + 1)
+    # 5. Bottom right corner.
+    elseif (x, y) == (m, n)
+        x_range = (x - 1):x
+        y_range = (y - 1):y
+    # 6. Bottom interior border.
+    elseif x == m
+        x_range = (x - 1):x
+        y_range = (y - 1):(y + 1)
+    # 7. Left interior border.
+    elseif y == 1
+        x_range = (x - 1):(x + 1)
+        y_range = y:(y + 1)
+    # 8. Right interior border.
+    elseif y == n
+        x_range = (x - 1):(x + 1)
+        y_range = (y - 1):y
+    # Interior vertices.
+    else
+        x_range = (x - 1):(x + 1)
+        y_range = (y - 1):(y + 1)
+    end
+    for i in x_range, j in y_range
+        # Exclude the point itself; it's not its own neighbor.
+        if (i, j) != (x, y)
+            push!(neighbors_coords, (i, j))
+        end
+    end
+    return neighbors_coords
+end
+
+function _parse_strings_to_matrix(vec::Vector{String}) :: Matrix{Char}
+    # For more general use, this function could assert that the lengths of each string in
+    # `vec` are equal to ensure the list of strings can be represented by a char matrix.
+    # Credit goes to this topic on the Julia forums:
+    #   https://discourse.julialang.org/t/converting-a-array-of-strings-to-an-array-of-char/35123/3
+    @assert !isempty(vec)
+    m, n = length(vec), length(vec[1])
+    A = Matrix{Char}(undef, m, n)
+    for i in eachindex(vec), (j, ch) in enumerate(vec[i])
+        A[i, j] = ch
+    end
+    return A
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

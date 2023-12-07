@@ -16,31 +16,31 @@ const _DIGITS_DICT = Dict{String, String}(
     "nine" => "n9e"
 )
 
-function _parse_line_to_int(line::String) :: Integer
+function part1_day01(lines::Vector{String})
+    lines = _parse_line_to_int.(lines)
+    return sum(lines)
+end
+
+function part2_day01(lines::Vector{String})
+    # Once digits have been inserted for the corresponding words, the problem setup is the
+    # same as in Part 1.
+    lines = _parse_words_to_digits.(lines)
+    return part1_day01(lines)
+end
+
+function _parse_line_to_int(line::String)
     line = filter(isdigit, line)
     value = parse(Int, line[begin] * line[end])
     return value
 end
 
-function _parse_words_to_digits(line::String)
+function _parse_words_to_digits(line::String) :: String
     for (word, num) in _DIGITS_DICT
         if occursin(word, line)
             line = replace(line, word => num)
         end
     end
     return line
-end
-
-function part1_day01(lines::Vector{String}) :: Integer
-    lines = _parse_line_to_int.(lines)
-    return sum(lines)
-end
-
-function part2_day01(lines::Vector{String}) :: Integer
-    # Once digits have been inserted for the corresponding words, the problem setup is the
-    # same as in Part 1.
-    lines = _parse_words_to_digits.(lines)
-    return part1_day01(lines)
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

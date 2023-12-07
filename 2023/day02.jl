@@ -7,14 +7,53 @@ using BenchmarkTools
 #   ...
 #
 struct Record
-    red::Integer
-    green::Integer
-    blue::Integer
+    red::Int
+    green::Int
+    blue::Int
 end
 
 struct Game
-    id::Integer
+    id::Int
     records::Vector{Record}
+end
+
+function part1_day02(lines::Vector{String}; rgb_lims=(12, 13, 14))
+    _is_valid_record(r::Record) = all((r.red, r.green, r.blue) .<= rgb_lims)
+    games = _parse_input(lines)
+    ids_sum = 0
+    for game in games
+        if all(_is_valid_record.(game.records))
+            ids_sum += game.id
+        end
+    end
+    return ids_sum
+end
+
+function part2_day02(lines::Vector{String})
+    games = _parse_input(lines)
+    power_sum = 0
+    for game in games
+        red_max, green_max, blue_max = 0, 0, 0
+        for record in game.records
+            red_max = max(record.red, red_max)
+            green_max = max(record.green, green_max)
+            blue_max = max(record.blue, blue_max)
+        end
+        power_sum += red_max * green_max * blue_max
+    end
+    return power_sum
+end
+
+function _parse_input(lines::Vector{String}) :: Vector{Game}
+    games = Game[]
+    for line in lines
+        id_str, result_str = split(line, ": ")
+        id = parse(Int, id_str[6:end])
+        results = split(result_str, "; ")
+        records = _parse_to_record.(results)
+        push!(games, Game(id, records))
+    end
+    return games
 end
 
 function _parse_to_record(s::AbstractString) :: Record
@@ -32,45 +71,6 @@ function _parse_to_record(s::AbstractString) :: Record
         end
     end
     return Record(red, green, blue)
-end
-
-function _parse_input(lines::Vector{String}) :: Vector{Game}
-    games = Game[]
-    for line in lines
-        id_str, result_str = split(line, ": ")
-        id = parse(Int, id_str[6:end])
-        results = split(result_str, "; ")
-        records = _parse_to_record.(results)
-        push!(games, Game(id, records))
-    end
-    return games
-end
-
-function part1_day02(lines::Vector{String}; rgb_lims=(12, 13, 14)) :: Integer
-    _is_valid_record(r::Record) = all((r.red, r.green, r.blue) .<= rgb_lims)
-    games = _parse_input(lines)
-    ids_sum = 0
-    for game in games
-        if all(_is_valid_record.(game.records))
-            ids_sum += game.id
-        end
-    end
-    return ids_sum
-end
-
-function part2_day02(lines::Vector{String}) :: Integer
-    games = _parse_input(lines)
-    power_sum = 0
-    for game in games
-        red_max, green_max, blue_max = 0, 0, 0
-        for record in game.records
-            red_max = max(record.red, red_max)
-            green_max = max(record.green, green_max)
-            blue_max = max(record.blue, blue_max)
-        end
-        power_sum += red_max * green_max * blue_max
-    end
-    return power_sum
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__

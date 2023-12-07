@@ -1,10 +1,33 @@
 using BenchmarkTools
 
-function _matches(winning_nums::Set{Integer}, card_nums::Set{Integer}) :: Integer
+function part1_day04(lines::Vector{String})
+    total_points = 0
+    for line in lines
+        winning_nums, card_nums = _parse_line(line)
+        matches = _matches(Set{Int}(winning_nums), Set{Int}(card_nums))
+        total_points += _points(matches)
+    end
+    return total_points
+end
+
+function part2_day04(lines::Vector{String})
+    card_counts = Dict{Int, Int}(i => 1 for i in eachindex(lines))
+    for (i, line) in enumerate(lines)
+        winning_nums, card_nums = _parse_line(line)
+        matches = _matches(Set{Int}(winning_nums), Set{Int}(card_nums))
+        # Add copies of the next cards for each (winning) copy of the currently held card.
+        for k in 1:matches
+            card_counts[i + k] += card_counts[i]
+        end
+    end
+    return sum(values(card_counts))
+end
+
+function _matches(winning_nums::Set{Int}, card_nums::Set{Int})
     return length(intersect(winning_nums, card_nums))
 end
 
-function _points(matches::Integer) :: Integer
+function _points(matches::Int)
     return matches > 0 ? 2^(matches - 1) : 0
 end
 
@@ -15,29 +38,6 @@ function _parse_line(line::String) :: Tuple{Vector{Int}, Vector{Int}}
     winning_nums = parse.(Int, split(winning_nums))
     card_nums = parse.(Int, split(card_nums))
     return winning_nums, card_nums
-end
-
-function part1_day04(lines::Vector{String}) :: Integer
-    total_points = 0
-    for line in lines
-        winning_nums, card_nums = _parse_line(line)
-        matches = _matches(Set{Integer}(winning_nums), Set{Integer}(card_nums))
-        total_points += _points(matches)
-    end
-    return total_points
-end
-
-function part2_day04(lines::Vector{String}) :: Integer
-    card_counts = Dict{Int, Int}(i => 1 for i in eachindex(lines))
-    for (i, line) in enumerate(lines)
-        winning_nums, card_nums = _parse_line(line)
-        matches = _matches(Set{Integer}(winning_nums), Set{Integer}(card_nums))
-        # Add copies of the next cards for each (winning) copy of the currently held card.
-        for k in 1:matches
-            card_counts[i + k] += card_counts[i]
-        end
-    end
-    return sum(values(card_counts))
 end
 
 if abspath(PROGRAM_FILE) == @__FILE__
