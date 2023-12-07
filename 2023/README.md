@@ -19,3 +19,6 @@ For reference, I also include the input file size and the number of lines, _N_, 
   - _Note:_ _N_ is the order of magnitude of a number concatenated from an input list of numbers.
   - Part 1: 1.383 μs (10 allocations: 1.25 KiB)
   - Part 2: 338.755 ns (8 allocations: 768 bytes)
+- **Day 7:** _N_ = 1000 (9.7 KiB)
+  - Part 1: 545.252 μs (22007 allocations: 1.30 MiB)
+  - Part 2: 606.978 μs (23343 allocations: 1.36 MiB)
