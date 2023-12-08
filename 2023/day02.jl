@@ -19,7 +19,7 @@ end
 
 function part1_day02(lines::Vector{String}; rgb_lims=(12, 13, 14))
     _is_valid_record(r::Record) = all((r.red, r.green, r.blue) .<= rgb_lims)
-    games = _parse_input(lines)
+    games = _parse_line_to_game.(lines)
     ids_sum = 0
     for game in games
         if all(_is_valid_record.(game.records))
@@ -30,7 +30,7 @@ function part1_day02(lines::Vector{String}; rgb_lims=(12, 13, 14))
 end
 
 function part2_day02(lines::Vector{String})
-    games = _parse_input(lines)
+    games = _parse_line_to_game.(lines)
     power_sum = 0
     for game in games
         red_max, green_max, blue_max = 0, 0, 0
@@ -44,19 +44,15 @@ function part2_day02(lines::Vector{String})
     return power_sum
 end
 
-function _parse_input(lines::Vector{String}) :: Vector{Game}
-    games = Game[]
-    for line in lines
-        id_str, result_str = split(line, ": ")
-        id = parse(Int, id_str[6:end])
-        results = split(result_str, "; ")
-        records = _parse_to_record.(results)
-        push!(games, Game(id, records))
-    end
-    return games
+function _parse_line_to_game(line::String) :: Game
+    id_str, result_str = split(line, ": ")
+    id = parse(Int, id_str[6:end])
+    results = split(result_str, "; ")
+    records = _parse_string_to_record.(results)
+    return Game(id, records)
 end
 
-function _parse_to_record(s::AbstractString) :: Record
+function _parse_string_to_record(s::AbstractString) :: Record
     red, green, blue = 0, 0, 0
     cube_counts = split(s, ", ")
     for cube_count in cube_counts

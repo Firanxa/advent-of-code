@@ -4,7 +4,7 @@ function part1_day04(lines::Vector{String})
     total_points = 0
     for line in lines
         winning_nums, card_nums = _parse_line(line)
-        matches = _matches(Set{Int}(winning_nums), Set{Int}(card_nums))
+        matches = _matches(Set(winning_nums), Set(card_nums))
         total_points += _points(matches)
     end
     return total_points
@@ -14,7 +14,7 @@ function part2_day04(lines::Vector{String})
     card_counts = Dict{Int, Int}(i => 1 for i in eachindex(lines))
     for (i, line) in enumerate(lines)
         winning_nums, card_nums = _parse_line(line)
-        matches = _matches(Set{Int}(winning_nums), Set{Int}(card_nums))
+        matches = _matches(Set(winning_nums), Set(card_nums))
         # Add copies of the next cards for each (winning) copy of the currently held card.
         for k in 1:matches
             card_counts[i + k] += card_counts[i]

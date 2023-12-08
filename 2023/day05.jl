@@ -201,7 +201,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
 
     # Part 2.
     part2_ans = part2_day05(lines) # 28580589
-    println("2023 DAY 5 / PART 1")
+    println("2023 DAY 5 / PART 2")
     println("================================================")
     println("Answer:     $part2_ans")
     print("Benchmark:")

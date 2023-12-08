@@ -10,25 +10,6 @@ const CARDS_DICT = Dict{Char, Char}(
     'A' => 'Z'
 )
 
-# Match a (sorted) vector of card counts to the type of hand vis-a-vis the priority of that
-# hand type. The higher the priority, the stronger the hand.
-const HAND_TYPES_DICT = Dict{Vector{Int}, Int}(
-    # Five of a kind.
-    [5] => 7,
-    # Four of a kind.
-    [1, 4] => 6,
-    # Full house.
-    [2, 3] => 5,
-    # Three of a kind.
-    [1, 1, 3] => 4,
-    # Two pair.
-    [1, 2, 2] => 3,
-    # One pair.
-    [1, 1, 1, 2] => 2,
-    # High card.
-    [1, 1, 1, 1, 1] => 1
-)
-
 struct CamelCard
     hand::String
     bid::Int
@@ -79,12 +60,12 @@ function _create_modified_card(hand::AbstractString, bid::Int) :: CamelCard
     joker = '1'
     # This replacement ensures that the Joker cannot be identified as the higher value
     # card when comparing hands of equal priority.
-    hand = replace(hand, 'J' => joker)
-    modified_priority = _hand_modified_priority(hand)
-    return CamelCard(hand, bid, modified_priority)
+    modified_hand = replace(hand, 'J' => joker)
+    modified_priority = _hand_priority(hand)
+    return CamelCard(modified_hand, bid, modified_priority)
 end
 
-function _hand_priority(hand::AbstractString)
+function _hand_priority(hand::AbstractString, joker::Char='1')
     card_counts = Dict{Char, Int}()
     for card in hand
         if haskey(card_counts, card)
@@ -93,22 +74,8 @@ function _hand_priority(hand::AbstractString)
             card_counts[card] = 1
         end
     end
-    counts = collect(values(card_counts))
-    sort!(counts)
-    return HAND_TYPES_DICT[counts]
-end
-
-function _hand_modified_priority(hand::AbstractString, joker::Char='1')
-    card_counts = Dict{Char, Int}()
-    for card in hand
-        if haskey(card_counts, card)
-            card_counts[card] += 1
-        else
-            card_counts[card] = 1
-        end
-    end
-    # Create the strongest possible hand by replacing each Joker with the card with the
-    # highest count, using value as a tiebreaker.
+    # If creating a modified CamelCard: Create the strongest possible hand by replacing
+    # each Joker with the card with the highest count, using value as a tiebreaker.
     if haskey(card_counts, joker)
         joker_count = card_counts[joker]
         # Edge case: Full house of Jokers.
@@ -118,9 +85,13 @@ function _hand_modified_priority(hand::AbstractString, joker::Char='1')
             card_counts[highest_card] += joker_count
         end
     end
-    counts = collect(values(card_counts))
-    sort!(counts)
-    return HAND_TYPES_DICT[counts]    
+    # The priority of hand types maps to an integer sequence according to the formula
+    #
+    #   priority = (# of most frequent card) - (# of unique cards)
+    #
+    max_count, ___ = findmax(card_counts)
+    priority = max_count - length(card_counts)
+    return priority
 end
 
 function _parse_line(line::String) :: Tuple{String, Int}
@@ -161,7 +132,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
 
     # Part 2.
     part2_ans = part2_day07(lines) # 249666369
-    println("2023 DAY 7 / PART 1")
+    println("2023 DAY 7 / PART 2")
     println("================================================")
     println("Answer:     $part2_ans")
     print("Benchmark:")
