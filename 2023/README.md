@@ -26,3 +26,6 @@ For reference, I also include the input file size and the number of lines, _N_, 
 - **Day 7:** _N_ = 1000 (9.7 KiB)
   - Part 1: 545.252 μs (22007 allocations: 1.30 MiB)
   - Part 2: 606.978 μs (23343 allocations: 1.36 MiB)
+- **Day 8:** _N_ = 788 (13.3 KiB)
+  - Part 1: 589.493 μs (10263 allocations: 927.30 KiB)
+  - Part 2: 2.421 ms (10265 allocations: 927.44 KiB)
