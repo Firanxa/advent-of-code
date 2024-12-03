@@ -50,7 +50,7 @@ def check_safety(report, with_dampening=False):
     return is_safe
 
 
-with open("../_inputs/day02.txt") as f:
+with open("../_tests/day02.txt") as f:
     reports = f.readlines()
 
 safe_report_count = 0

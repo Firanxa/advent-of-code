@@ -20,7 +20,7 @@ def mul(x, y):
     return x * y
 
 
-with open("../_inputs/day03.txt") as f:
+with open("../_tests/day03.txt") as f:
     memory = f.read()
 
 # Find all `mul(x,y)`, `do()` and `don't()` substrings.

@@ -9,7 +9,7 @@ easier.
 import numpy as np
 
 
-with open("../_inputs/day01.txt") as f:
+with open("../_tests/day01.txt") as f:
     text = f.readlines()
 
 for i, line in enumerate(text):

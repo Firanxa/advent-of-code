@@ -1,1 +1,3 @@
-/*/inputs
+# For each year, my user-specific inputs go in the _inputs/ directory.
+# Example inputs from the website go in the _tests/ directory.
+/*/_inputs
