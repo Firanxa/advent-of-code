@@ -18,7 +18,9 @@ pursued the sorting solution instead. I found out later that there does exist
 a sort for this situation: Topological sorting, which NetworkX implements.
 """
 
+import networkx as nx
 from functools import cmp_to_key
+from itertools import pairwise
 
 
 def order_pages(page_before, page_after):
@@ -30,6 +32,11 @@ def order_pages(page_before, page_after):
         return 0
     else:
         return -1
+
+
+def is_valid(update, G):
+    """Returns whether a directed path exists through the given page order."""
+    return all([G.has_edge(u, v) for u, v in pairwise(update)])
 
 
 with open("../_inputs/day05.txt") as f:
@@ -51,6 +58,7 @@ with open("../_inputs/day05.txt") as f:
         else:
             updates.append(list(map(int, line.split(','))))
 
+# Original solution by sorting with a custom comparator.
 middle_page_number_sum = 0
 corrected_middle_page_number_sum = 0
 for update in updates:
@@ -65,5 +73,28 @@ for update in updates:
         corrected_middle_page_number = sorted_update[n // 2]
         corrected_middle_page_number_sum += corrected_middle_page_number
 
+print("Solved by sorting with a custom comparator:")
 print(f'PART 1\tPage number sum: {middle_page_number_sum}')
 print(f'PART 2\tCorrected page number sum: {corrected_middle_page_number_sum}')
+
+# Alternate solution treating the rules as a directed acyclic graph.
+alt_ans_1 = 0
+alt_ans_2 = 0
+G = nx.DiGraph(rules)
+for update in updates:
+    n = len(update)
+    if is_valid(update, G):
+        middle_page_number = update[n // 2]
+        alt_ans_1 += middle_page_number
+    else:
+        H = G.subgraph(update)
+        sorted_update = list(nx.topological_sort(H))
+        corrected_middle_page_number = sorted_update[n // 2]
+        alt_ans_2 += corrected_middle_page_number
+
+assert alt_ans_1 == middle_page_number_sum
+assert alt_ans_2 == corrected_middle_page_number_sum
+
+print("\nSolved with a DAG:")
+print(f'PART 1\tPage number sum: {alt_ans_1}')
+print(f'PART 2\tCorrected page number sum: {alt_ans_2}')
