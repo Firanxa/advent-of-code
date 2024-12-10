@@ -90,7 +90,7 @@ def move(current_location, direction):
         return x, y - 1
 
 
-with open("../_inputs/day06.txt") as f:
+with open("../_tests/day06.txt") as f:
     patrol_map = f.read().splitlines()
     patrol_map = np.array([list(line) for line in patrol_map])
     dims = patrol_map.shape
@@ -116,7 +116,7 @@ print(f'PART 1\tNumber of distinct visited tiles: {visited.sum()}')
 # PART 2.
 valid_obstacle_count = 0
 visited_indexes = zip(*np.where(visited))
-for i, j in tqdm(visited_indexes):
+for i, j in visited_indexes:
     # An obstacle cannot be placed in the guard's starting location.
     if (i, j) == start_location:
         continue

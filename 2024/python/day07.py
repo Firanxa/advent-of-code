@@ -79,7 +79,7 @@ def calibrate(target, nums):
     return is_valid, is_valid_with_concat
 
 
-with open("../_inputs/day07.txt") as f:
+with open("../_tests/day07.txt") as f:
     lines = f.readlines()
 
 total_calibration_result = 0

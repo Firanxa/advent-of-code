@@ -29,6 +29,7 @@ instructions = re.findall(r"mul\(\d+,\d+\)|do\(\)|don't\(\)", memory)
 # PART 1.
 multiplications = [x for x in instructions if x != "do()" and x != "don't()"]
 multiplication_sum = sum(map(eval, multiplications))
+
 print(f'PART 1\tSum of multiplications: {multiplication_sum}')
 
 # PART 2.
@@ -41,4 +42,5 @@ for instruction in instructions:
         proceed = False
     elif proceed:
         multiplication_sum += eval(instruction)
+
 print(f'PART 2\tSum of multiplications: {multiplication_sum}')

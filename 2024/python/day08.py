@@ -40,7 +40,7 @@ def place_antinodes(coords, antinode_map):
         antinode_map[coord] = True
 
 
-with open("../_inputs/day08.txt") as f:
+with open("../_tests/day08.txt") as f:
     antenna_map = f.read().splitlines()
     antenna_map = np.array([list(line) for line in antenna_map])
     dims = antenna_map.shape

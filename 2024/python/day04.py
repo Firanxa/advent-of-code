@@ -59,6 +59,7 @@ def is_cross_mas(x, y, x_max, y_max):
         diag_2 = ''.join([grid[x+k,y-k] for k in [1, 0, -1]])
         return (diag_1 == "MAS" or diag_1 == "SAM") and \
             (diag_2 == "MAS" or diag_2 == "SAM")
+    
     return False
 
 

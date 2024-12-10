@@ -39,7 +39,7 @@ def is_valid(update, G):
     return all([G.has_edge(u, v) for u, v in pairwise(update)])
 
 
-with open("../_inputs/day05.txt") as f:
+with open("../_tests/day05.txt") as f:
     text = f.read().splitlines()
     rules = {}
     updates = []
